@@ -1,5 +1,6 @@
 @startuml
-!include C4_Context.puml
+%set_variable_value("RELATIVE_INCLUDE", ".")
+!include ../C4_Context.puml
 
 Person(user, "Клиент")
 Person(engineer, "Выездной специалист", "Подключает новые устройства")
