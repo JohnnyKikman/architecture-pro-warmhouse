@@ -7,9 +7,4 @@ Person(engineer, "Выездной специалист", "Подключает 
 System(warmhouse, "Система «Теплый дом»")
 System_Ext(sensor, "Подключенное устройство")
 
-Rel(user, warmhouse, "Просматривает и управляет устройствами")
-Rel(warmhouse, sensor, "Посылает команды и запрашивает состояние")
-Rel(engineer, sensor, "Регистрирует в системе")
-Rel(engineer, warmhouse, "Подключает новое устройство")
-
 @enduml

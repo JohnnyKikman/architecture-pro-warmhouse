@@ -6,9 +6,4 @@ Person(user, "Клиент")
 System(warmhouse, "Система «Теплый дом»")
 System_Ext(sensor, "Подключенное устройство")
 
-Rel(user, warmhouse, "Просматривает и управляет устройствами")
-Rel(warmhouse, sensor, "Посылает команды")
-Rel_U(sensor, warmhouse, "Обновляет состояние")
-Rel(user, sensor, "Регистрирует в системе")
-
 @enduml
