@@ -1,5 +1,5 @@
 @startuml
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/refs/heads/master/C4_Context.puml
+!include C4_Context.puml
 
 Person(user, "Клиент")
 Person(engineer, "Выездной специалист", "Подключает новые устройства")
