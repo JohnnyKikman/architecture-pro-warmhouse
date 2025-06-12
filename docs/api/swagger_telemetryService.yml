@@ -1,0 +1,134 @@
+openapi: 3.0.4
+info:
+  title: Warmhouse - Telemetry API
+  description: |-
+    REST API для сервиса телеметрии
+  version: 1.0.12
+servers:
+  - url: https://localhost:8080/api/
+tags:
+  - name: telemetry
+    description: Telemetry operations
+  - name: device
+    description: Device operations
+paths:
+  /telemetry/{deviceId}:
+    get:
+      tags:
+        - telemetry
+      summary: Запросить и получить актуальную телеметрию с устройства
+      description: Отправляет запрос к устройству с указанным ID на обновление данных
+      parameters:
+        - name: deviceId
+          in: path
+          description: ID устройства
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Устройство найдено, данные получены
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TelemetryDto'
+        '500':
+          description: Ошибка на стороне сервера
+  /telemetry/{deviceId}/getPage:
+    post:
+      tags:
+        - telemetry
+      summary: Запросить список данных телеметрии устройства
+      description: Получает из БД пагинированный список данных о телеметрии
+      parameters:
+        - name: deviceId
+          in: path
+          description: ID устройства
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TelemetryRequestDto'
+        required: true
+      responses:
+        '200':
+          description: Данные телеметрии найдены
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TelemetryDto'
+        '400':
+          description: Некорректное содержимое запроса
+        '401':
+          description: Пользователь не вошел в систему
+        '403':
+          description: У пользователя нет доступа к устройству
+        '404':
+          description: Устройство не найдено
+        '500':
+          description: Ошибка на стороне сервера
+components:
+  schemas:
+    TelemetryDto:
+      type: object
+      properties:
+        dateTime:
+          type: string
+          format: date-time
+          description: Дата-время элемента телеметрии
+        enabled:
+          type: boolean
+          description: Признак включения/выключения устройства
+        value:
+          type: string
+          description: Значение датчика
+        unitType:
+          type: string
+          description: Единица измерения
+      example:
+        dateTime: '2025-06-01T12:15:00.000+03:00'
+        enabled: true
+        value: '22.5'
+        unitType: '°C'
+    TelemetryRequestDto:
+      type: object
+      properties:
+        page:
+          type: integer
+        size:
+          type: integer
+        dateTime:
+          $ref: '#/components/schemas/DateTimeFilter'
+        dateTimeFrom:
+          type: string
+          format: date-time
+        dateTimeTo:
+          type: string
+          format: date-time
+      example:
+        page: 0
+        size: 50
+        dateTime:
+          from: '2025-06-01T12:15:00.000+03:00'
+          to: '2025-06-02T12:15:00.000+03:00'
+    DateTimeFilter:
+      type: object
+      properties:
+        from:
+          type: string
+          format: date-time
+        to:
+          type: string
+          format: date-time

@@ -1,0 +1,169 @@
+openapi: 3.0.4
+info:
+  title: Warmhouse - Device Control Service API
+  description: |-
+    REST API для сервиса управления состоянием устройств
+  version: 1.0.12
+servers:
+  - url: https://localhost:8080/api/
+tags:
+  - name: device
+    description: Device operations
+paths:
+  /device/{id}:
+    get:
+      tags:
+        - device
+      summary: Получить данные об устройстве
+      description: Получает последние данные об устройстве по ID из локальной БД
+      parameters:
+        - name: id
+          in: path
+          description: ID устройства
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Устройство найдено, данные получены
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceResponseDto'
+        '400':
+          description: Некорректное содержимое запроса
+        '401':
+          description: Пользователь не вошел в систему
+        '403':
+          description: У пользователя нет доступа к устройству
+        '404':
+          description: Устройство не найдено
+        '500':
+          description: Ошибка на стороне сервера
+  /device/{id}/actual:
+    get:
+      tags:
+        - device
+      summary: Обновить данные об устройстве с датчиков
+      description: Отправляет запрос к устройству с указанным ID на обновление данных, и после получения обновляет текущее состояние в БД и возвращает его клиенту
+      parameters:
+        - name: id
+          in: path
+          description: ID устройства
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Успешное получение данных от устройства
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceResponseDto'
+        '400':
+          description: Некорректное содержимое запроса
+        '401':
+          description: Пользователь не вошел в систему
+        '403':
+          description: У пользователя нет доступа к устройству
+        '404':
+          description: Устройство не найдено
+        '500':
+          description: Ошибка на стороне сервера
+  /device:
+    put:
+      tags:
+        - device
+      summary: Отправить команду на устройство
+      description: Отправляет новое целевое значение на устройство с указанным ID, обновляя целевое состояние в БД на указанное, и получает подтвежрдение от устройства и возвращает ответ клиенту
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceStateDto'
+        required: true
+      responses:
+        '200':
+          description: Успешное получение команды устройством
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceResponseDto'
+        '400':
+          description: Некорректное содержимое запроса
+        '401':
+          description: Пользователь не вошел в систему
+        '403':
+          description: У пользователя нет доступа к устройству
+        '404':
+          description: Устройство не найдено
+        '500':
+          description: Ошибка на стороне сервера
+components:
+  schemas:
+    DeviceStateDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        enabled:
+          type: boolean
+          description: Признак включения/выключения устройства
+        targetValue:
+          type: string
+          description: Новое целевое значение датчика
+      example:
+        id: '03b97ed4-0f7b-4902-b449-72738cae1c62'
+        enabled: true
+        targetValue: '21.5'
+    DeviceResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          description: Наименование устройства
+        connected:
+          type: boolean
+          description: Признак, подтверждено ли подключение устройства
+        enabled:
+          type: boolean
+          description: Признак включения/выключения устройства
+        targetValue:
+          type: string
+          description: Целевое значение датчика
+        actualValue:
+          type: string
+          description: Реальное значение датчика
+        dateTimeUpdated:
+          type: string
+          format: date-time
+          description: Дата-время последнего обновления информации с датчиков
+        deviceType:
+          $ref: '#/components/schemas/DeviceType'
+      example:
+        id: '03b97ed4-0f7b-4902-b449-72738cae1c62'
+        name: 'Отопление 1'
+        connected: true
+        enabled: true
+        targetValue: '21.5'
+        actualValue: '22.5'
+        dateTimeUpdated: '2025-06-01T12:15:00.000+03:00'
+        deviceType: {
+          name: 'Термостат',
+          unitType: '°C'
+        }
+    DeviceType:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Описание вида устройства
+        unitType:
+          type: string
+          description: Наименование единицы измерений значения датчика

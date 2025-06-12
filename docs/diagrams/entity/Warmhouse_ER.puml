@@ -6,7 +6,8 @@ entity Device {
     +name: string
     +connected: boolean
     +active: boolean
-    +value: string
+    +targetValue: string
+    +actualValue: string
     +dateTimeUpdated: timestamptz
     +type_id: uuid <<fk on DeviceType>>
     +user_id: uuid <<fk on User>>
@@ -47,6 +48,7 @@ entity TelemetryData {
     +dateTime: timestamptz
     +active: boolean
     +value: string
+    +unit_type: unit <<enum>>
     +device_id: uuid <<fk on Device>>
 }
 
