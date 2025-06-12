@@ -1,0 +1,87 @@
+@startuml
+
+package "Device manager" {
+    class LocationController {
+        +getLocations(): List<Location>
+        +getLocation(id): Location
+        +addLocation(Location): Location
+        +updateLocation(Location): Location
+        +removeLocation(id)
+    }
+
+    class DeviceGroupController {
+        +getDeviceGroups(locationId): List<DeviceGroup>
+        +getDeviceGroup(id): DeviceGroup
+        +addDeviceGroup(DeviceGroup): DeviceGroup
+        +updateDeviceGroup(DeviceGroup): DeviceGroup
+        +removeDeviceGroup(id)
+        +addDevice(deviceId, deviceGroupId): DeviceGroup
+    }
+
+    class DeviceController {
+        +getDevices(groupId): List<Device>
+        +getDevice(id): Device
+        +connect(Device)
+        +confirmConnection(id): Device
+        +updateDevice(Device): Device
+        +disconnect(deviceId)
+    }
+
+    class LocationService {
+        +getLocations(): List<Location>
+        +getLocation(id): Location
+        +addLocation(Location): Location
+        +updateLocation(Location): Location
+        +removeLocation(id)
+    }
+
+    class DeviceGroupService {
+        +getDeviceGroups(locationId): List<DeviceGroup>
+        +getDeviceGroup(id): DeviceGroup
+        +addDeviceGroup(DeviceGroup): DeviceGroup
+        +updateDeviceGroup(DeviceGroup): DeviceGroup
+        +removeDeviceGroup(id)
+        +addDevice(deviceId, deviceGroupId): DeviceGroup
+    }
+
+    class DeviceService {
+        +getDevices(PageRequest): List<Device>
+        +getDevice(deviceId): List<Device>
+        +createDevice(Device)
+        +updateDevice(Device)
+        +deleteDevice()
+    }
+
+    class LocationRepository {
+        +findById()
+        +create()
+        +update()
+        +delete()
+    }
+
+    class DeviceGroupRepository {
+        +findById()
+        +create()
+        +update()
+        +delete()
+    }
+
+    class DeviceRepository {
+        +findById()
+        +create()
+        +update()
+        +delete()
+    }
+
+    LocationController --> LocationService
+    LocationService --> LocationRepository
+    DeviceGroupController --> DeviceGroupService
+    DeviceGroupService --> LocationRepository
+    DeviceGroupService --> DeviceGroupRepository
+    DeviceGroupService --> DeviceRepository
+    DeviceController --> DeviceService
+    DeviceService --> DeviceGroupRepository
+    DeviceService --> DeviceRepository
+}
+
+@enduml
