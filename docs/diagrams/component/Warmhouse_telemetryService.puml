@@ -3,6 +3,7 @@
 
 Container(proxy, "API proxy", "Маршрутизация запросов между монолитом и микросервисами")
 Container(userService, "Сервис идентификации пользователей", "Управляет личным кабинетом пользователя")
+Container(deviceControlService, "Сервис управления устройствами", "Управление состоянием устройства")
 Container_Boundary(telemetryService, "Сервис работы с датчиками", "telemetryService") {
     Component(telemetryController, "SensorDataController", "Работа с датчиками")
     Component(serviceLayer, "ServiceLayer", "Слой бизнес-логики")
@@ -18,6 +19,7 @@ Rel(deviceRepository, deviceDatabase, "Обновляет информацию �
 Rel_D(serviceLayer, userService, "Посылает запросы на проверку прав", "REST API")
 
 Rel_D(serviceLayer, device, "Запрашивает данные с датчиков", "REST API")
-Rel_U(device, serviceLayer, "Отправляет данные датчиков", "Async API")
+Rel_U(device, serviceLayer, "Отправляет данные датчиков (периодически либо по запросу)", "REST API")
+Rel_L(deviceControlService, serviceLayer, "Слушает обновления от датчиков", "Async API")
 
 @enduml

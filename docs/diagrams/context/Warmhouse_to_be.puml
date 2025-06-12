@@ -4,9 +4,11 @@
 Person(user, "Клиент")
 System(warmhouse, "Система «Теплый дом»")
 System_Ext(sensor, "Подключенное устройство")
+System_Ext(monolithWarmhouse, "Монолитная система «Теплый дом»")
 
 Rel(user, warmhouse, "Просматривает и управляет устройствами")
 Rel(warmhouse, sensor, "Посылает команды")
+Rel(warmhouse, monolithWarmhouse, "Делегирует вызовы")
 Rel(sensor, warmhouse, "Обновляет состояние")
 Rel(user, sensor, "Регистрирует в системе")
 

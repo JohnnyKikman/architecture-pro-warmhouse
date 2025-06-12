@@ -13,14 +13,14 @@ ContainerDb(deviceDatabase, "База данных устройств", "БД с
 System_Ext(device, "Подключенное устройство")
 
 Rel_D(proxy, devicesListController, "Посылает запросы", "REST API")
-Rel_D(proxy, deviceController, "Посылает запрос на подключение", "REST API")
+Rel_D(proxy, deviceController, "Подтверждает подключение/запрашивает отключение", "REST API")
 Rel_D(deviceController, serviceLayer, "Вызывает методы")
 Rel_D(devicesListController, serviceLayer, "Вызывает методы")
 Rel_D(serviceLayer, deviceRepository, "Вызывает методы")
 Rel_D(serviceLayer, userService, "Посылает запросы на проверку прав", "REST API")
 Rel_D(deviceRepository, deviceDatabase, "Запрашивает информацию об устройствах", "SQL")
 
-Rel_L(device, deviceController, "Подтверждает подключение/отключение", "Async API")
+Rel_L(device, deviceController, "Посылает запрос на подключение", "REST API")
 Rel_R(serviceLayer, device, "Посылает запрос на отключение от системы", "REST API")
 
 @enduml
