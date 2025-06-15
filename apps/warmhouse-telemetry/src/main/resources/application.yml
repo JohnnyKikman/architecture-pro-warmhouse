@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: telemetry
+  datasource:
+    url: jdbc:postgresql://warmhouse-postgres:5433/warmhouse
+    driverClassName: org.postgresql.Driver
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+
+server:
+  port: 8083

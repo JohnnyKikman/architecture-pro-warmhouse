@@ -1,0 +1,62 @@
+@startuml
+
+'Устройство
+entity Device {
+    +id: long
+    +name: string
+    +connected: boolean
+    +active: boolean
+    +targetValue: string
+    +actualValue: string
+    +dateTimeUpdated: timestamptz
+    +type_id: long <<fk on DeviceType>>
+    +user_id: long <<fk on User>>
+    +device_group_id: long <<fk on DeviceGroup>>
+}
+
+'Тип устройства
+entity DeviceType {
+    +id: long
+    +name: string
+    +unit_type: string <<enum>>
+}
+
+'Пользователь
+entity User {
+    +id: long
+    +name: string
+}
+
+'Местоположение (например, "Дом", "Офис" и т.д.)
+entity Location {
+    +id: long
+    +name: string
+    +timezone: string
+    +user_id: long <<fk on user>>
+}
+
+'Группа устройств (например, "Гостиная", "Переговорная А" и т.д.)
+entity DeviceGroup {
+    +id: long
+    +name: string
+    +location_id: long <<fk on Location>>
+}
+
+'Данные об устройстве в момент времени t
+entity TelemetryData {
+    +id: long
+    +dateTime: timestamptz
+    +active: boolean
+    +value: string
+    +unit_type: string <<enum>>
+    +device_id: long <<fk on Device>>
+}
+
+User }o--|| Device
+User }|--|| Location
+Location }o--|| DeviceGroup
+Device ||--o{ DeviceGroup
+Device ||--o{ DeviceType
+Device ||--o{ TelemetryData
+
+@enduml

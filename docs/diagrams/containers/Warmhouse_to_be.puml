@@ -1,0 +1,38 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/refs/heads/master/C4_Container.puml
+
+Person(user, "Клиент")
+System_Boundary(microserviceWarmhouse, "Система «Теплый дом»") {
+    Container(proxy, "API proxy", "Маршрутизация запросов между монолитом и микросервисами")
+    Container(userService, "Сервис идентификации пользователей", "Управляет личным кабинетом пользователя")
+    Container(deviceManagementService, "Сервис учета устройств", "Управляет подключением новых устройств")
+    Container(deviceControlService, "Сервис управления устройствами", "Управляет состоянием подключенных устройств")
+    Container(telemetryService, "Сервис работы с датчиками", "Считывает телеметрию с устройств")
+
+    ContainerDb(deviceDatabase, "База данных устройств", "БД со списком устройств")
+}
+System_Ext(monolithWarmhouse, "Монолитная система «Теплый дом»")
+System_Ext(device, "Подключенное устройство")
+
+Rel(user, proxy, "Отправляет запросы")
+Rel(proxy, userService, "Производит управление ЛК пользователя", "REST API")
+Rel(proxy, deviceManagementService, "Производит подключение устройств", "REST API")
+Rel(proxy, deviceControlService, "Производит управление устройствами", "REST API")
+Rel(proxy, telemetryService, "Запрашивает данные датчиков", "REST API")
+Rel_R(proxy, monolithWarmhouse, "Перенаправляет запросы", "REST API")
+
+Rel_D(userService, deviceDatabase, "Чтение/запись", SQL)
+Rel_D(deviceManagementService, deviceDatabase, "Чтение/запись", SQL)
+Rel_D(deviceControlService, deviceDatabase, "Чтение/запись", SQL)
+Rel_D(telemetryService, deviceDatabase, "Чтение/запись", SQL)
+
+Rel_D(deviceManagementService, device, "Подключает/удаляет", "REST API")
+Rel_D(deviceControlService, device, "Посылает команды", "REST API")
+Rel_D(telemetryService, device, "Получает информацию с датчиков", "Async API")
+
+Rel(deviceControlService, telemetryService, "Инициирует запрос данных с датчиков", "Async API")
+Rel(deviceManagementService, userService, "Проверяет права доступа", "REST API")
+Rel(deviceControlService, userService, "Проверяет права доступа", "REST API")
+Rel(telemetryService, userService, "Проверяет права доступа", "REST API")
+
+@enduml

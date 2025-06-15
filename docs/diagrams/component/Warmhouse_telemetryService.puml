@@ -1,0 +1,25 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+Container(proxy, "API proxy", "Маршрутизация запросов между монолитом и микросервисами")
+Container(userService, "Сервис идентификации пользователей", "Управляет личным кабинетом пользователя")
+Container(deviceControlService, "Сервис управления устройствами", "Управление состоянием устройства")
+Container_Boundary(telemetryService, "Сервис работы с датчиками", "telemetryService") {
+    Component(telemetryController, "SensorDataController", "Работа с датчиками")
+    Component(serviceLayer, "ServiceLayer", "Слой бизнес-логики")
+    Component(deviceRepository, "DeviceRepository", "Слой работы с БД устройств")
+}
+ContainerDb(deviceDatabase, "База данных устройств")
+System_Ext(device, "Подключенное устройство")
+
+Rel_D(proxy, telemetryController, "Посылает запросы", "REST API")
+Rel_D(telemetryController, serviceLayer, "Вызывает методы")
+Rel_D(serviceLayer, deviceRepository, "Вызывает методы")
+Rel(deviceRepository, deviceDatabase, "Обновляет информацию о текущем состоянии устройств", "SQL")
+Rel_D(serviceLayer, userService, "Посылает запросы на проверку прав", "REST API")
+
+Rel_D(serviceLayer, device, "Запрашивает данные с датчиков", "REST API")
+Rel_U(device, serviceLayer, "Отправляет данные датчиков (периодически либо по запросу)", "REST API")
+Rel_L(deviceControlService, serviceLayer, "Слушает обновления от датчиков", "Async API")
+
+@enduml
