@@ -33,6 +33,7 @@ public class DeviceType {
     @Column(name = "unit_type")
     private UnitType unitType;
 
+    @SuppressWarnings("unused")
     public enum UnitType {
         TOGGLE, CELSIUS, FAHRENHEIT, PERCENT, WATT, LUX
     }
