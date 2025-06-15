@@ -7,17 +7,27 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready", "-d", "db_prod"]
-      interval: 30s
-      timeout: 60s
-      retries: 5
-      start_period: 80s
     ports:
       - "5432:5432"
     volumes:
       - ./smart_home/init.sql:/docker-entrypoint-initdb.d/init.sql
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - smarthome-network
+
+  warmhouse-postgres:
+    image: postgres:16-alpine
+    container_name: warmhouse-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_PORT: 5433
+    ports:
+      - "5433:5433"
+    volumes:
+      - ./warmhouse-db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - warmhouse_postgres_data:/var/lib/postgresql/data
+    command: -p 5433
     networks:
       - smarthome-network
 
@@ -30,6 +40,34 @@ services:
     networks:
       - smarthome-network
 
+  warmhouse-device-control:
+    build:
+      context: ./warmhouse-device-control
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8082"
+    depends_on:
+      warmhouse-postgres:
+        condition: service_started
+      app:
+        condition: service_started
+    networks:
+      - smarthome-network
+
+  warmhouse-telemetry:
+    build:
+      context: ./warmhouse-telemetry
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8083"
+    depends_on:
+      warmhouse-postgres:
+        condition: service_started
+      app:
+        condition: service_started
+    networks:
+      - smarthome-network
+
   app:
     build:
       context: ./smart_home
@@ -37,7 +75,7 @@ services:
     container_name: smarthome-app
     depends_on:
       postgres:
-        condition: service_healthy
+        condition: service_started
       temperature-api:
         condition: service_started
     environment:
@@ -51,6 +89,7 @@ services:
 
 volumes:
   postgres_data:
+  warmhouse_postgres_data:
 
 networks:
   smarthome-network:

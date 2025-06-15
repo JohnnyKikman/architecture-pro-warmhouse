@@ -24,8 +24,7 @@ paths:
           description: ID устройства
           required: true
           schema:
-            type: string
-            format: uuid
+            type: integer
       responses:
         '200':
           description: Устройство найдено, данные получены
@@ -47,8 +46,7 @@ paths:
           description: ID устройства
           required: true
           schema:
-            type: string
-            format: uuid
+            type: integer
       requestBody:
         content:
           application/json:
@@ -111,12 +109,6 @@ components:
           type: integer
         dateTime:
           $ref: '#/components/schemas/DateTimeFilter'
-        dateTimeFrom:
-          type: string
-          format: date-time
-        dateTimeTo:
-          type: string
-          format: date-time
       example:
         page: 0
         size: 50

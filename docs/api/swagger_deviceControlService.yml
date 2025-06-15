@@ -22,8 +22,7 @@ paths:
           description: ID устройства
           required: true
           schema:
-            type: string
-            format: uuid
+            type: integer
       responses:
         '200':
           description: Устройство найдено, данные получены
@@ -53,8 +52,7 @@ paths:
           description: ID устройства
           required: true
           schema:
-            type: string
-            format: uuid
+            type: integer
       responses:
         '200':
           description: Успешное получение данных от устройства
@@ -107,8 +105,7 @@ components:
       type: object
       properties:
         id:
-          type: string
-          format: uuid
+          type: integer
         enabled:
           type: boolean
           description: Признак включения/выключения устройства
@@ -116,15 +113,14 @@ components:
           type: string
           description: Новое целевое значение датчика
       example:
-        id: '03b97ed4-0f7b-4902-b449-72738cae1c62'
+        id: 12345
         enabled: true
         targetValue: '21.5'
     DeviceResponseDto:
       type: object
       properties:
         id:
-          type: string
-          format: uuid
+          type: integer
         name:
           type: string
           description: Наименование устройства
@@ -147,7 +143,7 @@ components:
         deviceType:
           $ref: '#/components/schemas/DeviceType'
       example:
-        id: '03b97ed4-0f7b-4902-b449-72738cae1c62'
+        id: 12345
         name: 'Отопление 1'
         connected: true
         enabled: true

@@ -2,54 +2,54 @@
 
 'Устройство
 entity Device {
-    +id: uuid
+    +id: long
     +name: string
     +connected: boolean
     +active: boolean
     +targetValue: string
     +actualValue: string
     +dateTimeUpdated: timestamptz
-    +type_id: uuid <<fk on DeviceType>>
-    +user_id: uuid <<fk on User>>
-    +device_group_id: uuid <<fk on DeviceGroup>>
+    +type_id: long <<fk on DeviceType>>
+    +user_id: long <<fk on User>>
+    +device_group_id: long <<fk on DeviceGroup>>
 }
 
 'Тип устройства
 entity DeviceType {
-    +id: uuid
+    +id: long
     +name: string
-    +unit_type: unit <<enum>>
+    +unit_type: string <<enum>>
 }
 
 'Пользователь
 entity User {
-    +id: uuid
+    +id: long
     +name: string
 }
 
 'Местоположение (например, "Дом", "Офис" и т.д.)
 entity Location {
-    +id: uuid
+    +id: long
     +name: string
     +timezone: string
-    +user_id: uuid <<fk on user>>
+    +user_id: long <<fk on user>>
 }
 
 'Группа устройств (например, "Гостиная", "Переговорная А" и т.д.)
 entity DeviceGroup {
-    +id: uuid
+    +id: long
     +name: string
-    +location_id: uuid <<fk on Location>>
+    +location_id: long <<fk on Location>>
 }
 
 'Данные об устройстве в момент времени t
 entity TelemetryData {
-    +id: uuid
+    +id: long
     +dateTime: timestamptz
     +active: boolean
     +value: string
-    +unit_type: unit <<enum>>
-    +device_id: uuid <<fk on Device>>
+    +unit_type: string <<enum>>
+    +device_id: long <<fk on Device>>
 }
 
 User }o--|| Device
